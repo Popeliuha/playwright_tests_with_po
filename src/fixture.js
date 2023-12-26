@@ -1,7 +1,9 @@
 import { test as base } from '@playwright/test';
-import { LoginPage } from './pages/Login.page';
-import { InventoryPage } from './pages/Inventory.page';
-import { ShopingCartPage } from './pages/ShopingCart.page';
+const { LoginPage } = require('./pages/Login.page');
+const { InventoryPage } = require('./pages/Inventory.page');
+const { ShopingCartPage } = require('./pages/ShopingCart.page');
+const { YourInformationPage } = require('./pages/YourInformation.page');
+const { OverviewPage } = require('./pages/Overview.page');
 
 export const test = base.extend({
     loginPage: async ({ page }, use) => {
@@ -12,5 +14,11 @@ export const test = base.extend({
     },
     shopingCartPage: async ({ page }, use) => {
         await use(new ShopingCartPage(page));
+    },
+    yourInformationPage: async ({ page }, use) => {
+        await use(new YourInformationPage(page));
+    },
+    overviewPage: async ({ page }, use) => {
+        await use(new OverviewPage(page));
     },
 });
