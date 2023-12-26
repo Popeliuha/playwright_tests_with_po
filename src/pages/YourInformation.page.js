@@ -20,7 +20,7 @@ export class YourInformationPage extends BaseSwagLabPage {
     }
 
     async fillPostalCode(code) { 
-        await this.postalCodeTxt.fill(code);
+        await this.postalCodeTxt.fill(code.toString());
     }
 
     async clickContinue() { 

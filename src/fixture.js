@@ -1,9 +1,9 @@
 import { test as base } from '@playwright/test';
-import { LoginPage } from './pages/Login.page';
-import { InventoryPage } from './pages/Inventory.page';
-import { ShopingCartPage } from './pages/ShopingCart.page';
-import { YourInformationPage } from './pages/YourInformation.page';
-import { OverviewPage } from './pages/Overview.page';
+const { LoginPage } = require('./pages/Login.page');
+const { InventoryPage } = require('./pages/Inventory.page');
+const { ShopingCartPage } = require('./pages/ShopingCart.page');
+const { YourInformationPage } = require('./pages/YourInformation.page');
+const { OverviewPage } = require('./pages/Overview.page');
 
 export const test = base.extend({
     loginPage: async ({ page }, use) => {

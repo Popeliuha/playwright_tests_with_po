@@ -17,7 +17,10 @@ export class OverviewPage extends BaseSwagLabPage {
         return tax[0];
     }
 
-    async getCartItemByName(name) { return this.page.locator('.cart_item', { hasText: name }); }
+    async getCartItemByName(name) { 
+        const cartItem = this.page.locator('.cart_item', { hasText: name }); 
+        return cartItem; 
+    }
 
     async getProductDescByName(name) {
         const cartItem = await this.getCartItemByName(name);

@@ -4,18 +4,17 @@ const { test } = require('../fixture');
 const { getRandomProductId } = require('../utilities/getRandomProductId');
 
 test.describe('', () => {
-    test('Perform login', async ({ loginPage, inventoryPage }) => {
+    test.beforeEach('', async ({ loginPage, inventoryPage }) => {
         await loginPage.navigate();
         await loginPage.performLogin('standard_user', 'secret_sauce');
-
         await expect(inventoryPage.headerTitle).toBeVisible();
+    });
 
+    test('Perform login', async ({ inventoryPage }) => {
         expect(await inventoryPage.inventoryItems.count()).toBeGreaterThanOrEqual(1);
     });
 
-    test('Add and remove product from the cart', async ({ loginPage, inventoryPage, shopingCartPage }) => {
-        await loginPage.navigate();
-        await loginPage.performLogin('standard_user', 'secret_sauce');
+    test('Add and remove product from the cart', async ({ inventoryPage, shopingCartPage }) => {
         await inventoryPage.addItemToCartById(0);
         expect(await inventoryPage.getNumberOfItemsInCart()).toBe('1');
 
@@ -26,11 +25,7 @@ test.describe('', () => {
         await expect(shopingCartPage.cartItems).not.toBeAttached();
     });
 
-    test('Verify az-za sorting', async ({ loginPage, inventoryPage }) => {
-        await loginPage.navigate();
-        await loginPage.performLogin('standard_user', 'secret_sauce');
-        await expect(inventoryPage.headerTitle).toBeVisible();
-
+    test('Verify az-za sorting', async ({ inventoryPage }) => {
         await inventoryPage.sortByValue('az');
         const inventoryItemsAZ = await inventoryPage.inventoryItems.allTextContents();
         await inventoryPage.sortByValue('za');
@@ -38,11 +33,7 @@ test.describe('', () => {
         expect(inventoryItemsAZ).not.toEqual(inventoryItemsZA);
     });
 
-    test('Verify lohi-hilo sorting', async ({ loginPage, inventoryPage }) => {
-        await loginPage.navigate();
-        await loginPage.performLogin('standard_user', 'secret_sauce');
-        await expect(inventoryPage.headerTitle).toBeVisible();
-
+    test('Verify lohi-hilo sorting', async ({ inventoryPage }) => {
         await inventoryPage.sortByValue('lohi');
         const inventoryItemsLoHi = await inventoryPage.inventoryItems.allTextContents();
         await inventoryPage.sortByValue('hilo');
@@ -50,11 +41,7 @@ test.describe('', () => {
         expect(inventoryItemsLoHi).not.toEqual(inventoryItemsHiLo);
     });
 
-    test('Add several random products', async ({ loginPage, inventoryPage, shopingCartPage }) => {
-        await loginPage.navigate();
-        await loginPage.performLogin('standard_user', 'secret_sauce');
-        await expect(inventoryPage.headerTitle).toBeVisible();
-
+    test('Add several random products', async ({ inventoryPage, shopingCartPage }) => {
         const itemsCount = await inventoryPage.inventoryItems.count();
         const id1 = getRandomProductId(itemsCount);
         const id2 = getRandomProductId(itemsCount);
@@ -82,12 +69,8 @@ test.describe('', () => {
     });
 
     test('Verify checkout', async ({
-        loginPage, inventoryPage, shopingCartPage, yourInformationPage, overviewPage,
+        inventoryPage, shopingCartPage, yourInformationPage, overviewPage,
     }) => {
-        await loginPage.navigate();
-        await loginPage.performLogin('standard_user', 'secret_sauce');
-        await expect(inventoryPage.headerTitle).toBeVisible();
-
         const itemsCount = await inventoryPage.inventoryItems.count();
         const id1 = getRandomProductId(itemsCount);
         const id2 = getRandomProductId(itemsCount);
@@ -101,9 +84,10 @@ test.describe('', () => {
         await inventoryPage.shopingCart.click();
         await shopingCartPage.clickCheckout();
 
-        await yourInformationPage.fillFirstName('Notashenka');
-        await yourInformationPage.fillLastName('Popeliushenka');
-        await yourInformationPage.fillPostalCode('58000');
+        const data = { firstName: 'Notashenka', lastName: 'Popeliushenka', zipCode: 58000 };
+        await yourInformationPage.fillFirstName(data.firstName);
+        await yourInformationPage.fillLastName(data.lastName);
+        await yourInformationPage.fillPostalCode(data.zipCode);
         await yourInformationPage.clickContinue();
 
         const prod1Desc = await overviewPage.getProductDescByName(id1Info.productName);
